@@ -11,6 +11,7 @@ class App extends React.Component { // 유사 자바스크립트. 자바스크�
 
     this.state = {
       mode: 'read',
+      selected_content_id:2,
       subject:{title:'WEB', sub:'World Wide Web!'},
       welcome:{title:'Welcome', desc:'Hello, React!!!'},
       contents: [
@@ -29,8 +30,18 @@ class App extends React.Component { // 유사 자바스크립트. 자바스크�
       _title = this.state.welcome.title;
       _desc = this.state.welcome.desc;
     } else if(this.state.mode === 'read'){
-      _title = this.state.contents[0].title;
-      _desc = this.state.contents[0].desc;
+      var i = 0;
+      while(i < this.state.contents.length){
+        var data = this.state.contents[i];
+        if(data.id === this.state.selected_content_id){
+          _title = data.title;
+          _desc = data.desc;
+        }
+        i = i + 1;
+      }
+
+      // _title = this.state.contents[0].title;
+      // _desc = this.state.contents[0].desc;
     }
     console.log('render', this);
     return (
@@ -38,11 +49,16 @@ class App extends React.Component { // 유사 자바스크립트. 자바스크�
         {/*<Subject title="WEB" sub="world wide web!"></Subject>*/}{/* props의 값들이 하드코딩 되어있음. 이 값을 state로 만들고 state 값을 subject라는 컴포넌트의 props로 전달하는 과정을 통해서 코드를 개선해보자! */}
         {/*<Subject title="React" sub="For UI"></Subject>*/}
         {/* 주석달기 : ctrl + / */}
-        {/* <Subject 
+        <Subject 
         title={this.state.subject.title} 
-        sub={this.state.subject.sub}>
-        </Subject> */}
-        <header>
+        sub={this.state.subject.sub}
+        onChangePage={function(){
+          //alert("hihihi"); -- test 완료
+          this.setState({mode:'welcome'});
+        }.bind(this)}
+        >
+        </Subject>
+        {/* <header>
           <h1><a href="/" onClick={function(e){ // react의 onclick은 onClick이다.
             // alert("hi");
             console.log(e);
@@ -54,10 +70,20 @@ class App extends React.Component { // 유사 자바스크립트. 자바스크�
             //debugger;
           }.bind(this)}>{this.state.subject.title}</a></h1>
           {this.state.subject.sub}
-        </header>
+        </header> */}
         {/*상위 컴포넌트App의 상태를 하위 컴포넌트로 전달하고 싶을 때는 
           상위 컴포넌트 state 값을 하위 컴포넌트 props의 값으로 전달하는 것은 얼마든지 가능하다.*/}
-        <TOC data={this.state.contents}></TOC>
+        <TOC 
+          onChangePage={function(id){
+          //alert('hi');
+          //debugger;
+          this.setState({
+            mode:'read',
+            selected_content_id:Number(id)
+          });
+        }.bind(this)} 
+        data={this.state.contents}
+        ></TOC>
         {/*<Content title="HTML" desc="HTML is HyperText Markup Language."></Content>*/}
         <Content title={_title} desc={_desc}></Content>
       </div>
